@@ -17,10 +17,8 @@ func NewDurableMap2(store Store2) (*DurableMap2, error) {
 }
 
 func (o *DurableMap2) Get(k interface{}, resolve func() (interface{}, error)) (v interface{}, err error) {
-	p("11111")
 	v, pres := o.smap.Load(k)
 	if pres {
-		p("22222")
 		return v, nil
 	} else {
 		//race conditions possible - cuncurrent Resolve() possible for the same key. We are going to live with that
