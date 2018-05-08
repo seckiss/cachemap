@@ -1,6 +1,21 @@
 package cachemap
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/davecgh/go-spew/spew"
+)
+
+func p(fs string, args ...interface{}) {
+	//fmt.Printf(fs+"\n", args...)
+	spew.Printf(fs+"\n", args...)
+}
+
+func panicOn(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
 type Store1 interface {
 	Load(internalMap *sync.Map) error
@@ -11,8 +26,4 @@ type Store1 interface {
 type Store2 interface {
 	Load(internalMap *sync.Map) error
 	Insert(k, v interface{}) error
-}
-
-type Resource interface {
-	Resolve(k interface{}) (v interface{}, err error)
 }

@@ -3,13 +3,12 @@ package cachemap
 import "sync"
 
 type DurableMap2 struct {
-	smap     sync.Map
-	store    Store2
-	resource Resource
+	smap  sync.Map
+	store Store2
 }
 
-func NewDurableMap2(store Store2, resource Resource) (*DurableMap2, error) {
-	o := DurableMap2{store: store, resource: resource}
+func NewDurableMap2(store Store2) (*DurableMap2, error) {
+	o := DurableMap2{store: store}
 	err := store.Load(&o.smap)
 	if err != nil {
 		return nil, err
@@ -17,13 +16,15 @@ func NewDurableMap2(store Store2, resource Resource) (*DurableMap2, error) {
 	return &o, err
 }
 
-func (o *DurableMap2) Get(k interface{}) (v interface{}, err error) {
+func (o *DurableMap2) Get(k interface{}, resolve func() (interface{}, error)) (v interface{}, err error) {
+	p("11111")
 	v, pres := o.smap.Load(k)
 	if pres {
+		p("22222")
 		return v, nil
 	} else {
 		//race conditions possible - cuncurrent Resolve() possible for the same key. We are going to live with that
-		v, err = o.resource.Resolve(k)
+		v, err = resolve()
 		if err != nil {
 			return nil, err
 		}
