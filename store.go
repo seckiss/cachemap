@@ -27,3 +27,7 @@ type Store2 interface {
 	Load(internalMap *sync.Map) error
 	Insert(k, v interface{}) error
 }
+
+type Store3 interface {
+	Load(internalMap *sync.Map) error
+}
